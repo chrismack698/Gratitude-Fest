@@ -25,8 +25,8 @@ flowchart TD
 
     subgraph DW ["❄  DATA WAREHOUSE ACCOUNT"]
         direction TB
-        P1["🔄 UPDATE_FEST_QUEUE()\nStored Procedure\nRuns @ 5AM CST"]:::dw
-        DWT["📋 FEST_QUEUE\nTable · Data Warehouse"]:::table
+        P1["🔄 UPDATE_FEST_QUEUE() Stored Procedure Runs @ 5AM CST"]:::dw
+        DWT["📋 FEST_QUEUE Table · Data Warehouse"]:::table
         P1 -->|"writes eligible donors"| DWT
     end
 
@@ -34,48 +34,48 @@ flowchart TD
 
     subgraph APP ["❄  APP ACCOUNT"]
         direction TB
-        T1["⏰ insert_fest_queue_task\nScheduled Task — runs each morning"]:::task
-        APT["📋 FEST_QUEUE\nTable · App Account"]:::table
-        T1 -->|"INSERT_FEST_QUEUE_PROC\nde-duped insert"| APT
+        T1["⏰ insert_fest_queue_task Scheduled Task — runs each morning"]:::task
+        APT["📋 FEST_QUEUE Table · App Account"]:::table
+        T1 -->|"INSERT_FEST_QUEUE_PROC de-duped insert"| APT
 
-        STR["🖥 Streamlit App\nAD group access only"]:::app
+        STR["🖥 Streamlit App AD group access only"]:::app
         APT -->|"donors available"| STR
 
-        STR --> C1["📞 Claim Next Donor\nAssigns donor to user\nWrites claim to audit log"]:::proc
-        STR --> C2["✅ Mark Thanked\nMarks donor · saves notes\nWrites history to audit log"]:::proc
-        STR --> C3["💬 App Feedback\nCaptures user feedback"]:::proc
+        STR --> C1["📞 Claim Next Donor Assigns donor to user Writes claim to audit log"]:::proc
+        STR --> C2["✅ Mark Thanked Marks donor · saves notes Writes history to audit log"]:::proc
+        STR --> C3["💬 App Feedback Captures user feedback"]:::proc
 
-        AL["📜 AUDIT_LOG\nTable · App Account"]:::table
+        AL["📜 AUDIT_LOG Table · App Account"]:::table
         C1 -->|"writes claim"| AL
         C2 -->|"writes history"| AL
 
-        FB["📋 APP_FEEDBACK\nTable · App Account"]:::table
+        FB["📋 APP_FEEDBACK Table · App Account"]:::table
         C3 -->|"writes feedback"| FB
 
         EM["📧 Email Notifications"]:::email
         C2 -->|"donor notes"| EM
         C3 -->|"feedback copy"| EM
 
-        T2["⏰ CALL_UPDATE_GRATITUDE_FEST_RESULTS\nScheduled Task — runs throughout day"]:::task
+        T2["⏰ CALL_UPDATE_GRATITUDE_FEST_RESULTS Scheduled Task — runs throughout day"]:::task
         APT -->|"thanked donors"| T2
         T2 -->|"UPDATE_GRATITUDE_FEST_RESULTS()"| RES
 
-        RES["📋 GRATITUDE_FEST_RESULTS\nTable · App Account"]:::table
+        RES["📋 GRATITUDE_FEST_RESULTS Table · App Account"]:::table
     end
 
-    DS2{{"⇄ Internal Data Share\nResults + Feedback → DW"}}:::share
+    DS2{{"⇄ Internal Data Share Results + Feedback → DW"}}:::share
 
     subgraph REPORT ["  RESULTS & REPORTING · DATA WAREHOUSE"]
         direction LR
-        DWR["📊 GRATITUDE_FEST_RESULTS\nData Warehouse"]:::table
-        DWF["📋 APP_FEEDBACK\nData Warehouse"]:::table
-        RPT["📈 Campaign Reporting\nDashboards & Analytics"]:::dw
-        EP["📧 Email Procedure\nNotes & feedback distribution"]:::email
+        DWR["📊 GRATITUDE_FEST_RESULTS Data Warehouse"]:::table
+        DWF["📋 APP_FEEDBACK Data Warehouse"]:::table
+        RPT["📈 Campaign Reporting Dashboards & Analytics"]:::dw
+        EP["📧 Email Procedure Notes & feedback distribution"]:::email
         DWR --> RPT
         DWF --> EP
     end
 
-    SF["☁ Salesforce CRM\nActivity Records via REST API\n⚠ Planned — next milestone"]:::sf
+    SF["☁ Salesforce CRM Activity Records via REST API ⚠ Planned — next milestone"]:::sf
 
     DWT -->|"data share"| DS1
     DS1 -->|"ingested by task"| T1
@@ -83,7 +83,7 @@ flowchart TD
     FB  --> DS2
     DS2 --> DWR
     DS2 --> DWF
-    RPT -->|"SF stored procedure\n(future)"| SF
+    RPT -->|"SF stored procedure (future)"| SF
 ```
 
 ---
