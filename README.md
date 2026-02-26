@@ -1,6 +1,6 @@
 # Gratitude Fest — Technical Architecture
 
-> End-to-end data flow across two Snowflake accounts — from donor eligibility through real-time thanking to Salesforce Activity records.
+> End-to-end data flow across two Snowflake accounts — from donor eligibility through real-time thanking to Salesforce Task records.
 
 | | |
 |---|---|
@@ -75,7 +75,7 @@ flowchart TD
         DWF --> EP
     end
 
-    SF["☁ Salesforce CRM Activity Records via REST API ⚠ Planned — next milestone"]:::sf
+    SF["☁ Salesforce CRM Task Records via REST API ⚠ Planned — next milestone"]:::sf
 
     DWT -->|"data share"| DS1
     DS1 -->|"ingested by task"| T1
@@ -135,7 +135,7 @@ Users access the Streamlit app in the App Account. Access is restricted to an Ac
 ---
 
 ### Step 07 — Salesforce Integration *(Planned)*
-A future stored procedure will read from `GRATITUDE_FEST_RESULTS` and call the Salesforce REST API to write an Activity record for every account that was thanked — closing the loop in CRM.
+A future stored procedure will read from `GRATITUDE_FEST_RESULTS` and call the Salesforce REST API to write a Task record for every account that was thanked — closing the loop in CRM.
 
 **Objects:** SF Activity Procedure *(not yet built)* · Salesforce REST API
 
@@ -150,7 +150,7 @@ A future stored procedure will read from `GRATITUDE_FEST_RESULTS` and call the S
 | `App Feedback` | User submits in-app feedback form | Writes feedback record to `APP_FEEDBACK` table, triggers email notification with feedback content | `APP_FEEDBACK` record · Email notification |
 | `INSERT_FEST_QUEUE_PROC` | Called by `insert_fest_queue_task` each morning | Reads from DW data share, inserts any donors not already present in App Account `FEST_QUEUE` | `FEST_QUEUE` (App Account) populated |
 | `UPDATE_GRATITUDE_FEST_RESULTS` | Called by `CALL_UPDATE` task throughout the day | Moves thanked donors to results table during campaign; finalizes all records when no active dates remain | `GRATITUDE_FEST_RESULTS` populated |
-| `SF Activity Procedure` *(Planned)* | Post-campaign trigger (TBD) | Reads `GRATITUDE_FEST_RESULTS`, calls Salesforce REST API to create an Activity record per thanked account | Salesforce Activity records |
+| `SF Activity Procedure` *(Planned)* | Post-campaign trigger (TBD) | Reads `GRATITUDE_FEST_RESULTS`, calls Salesforce REST API to create an Task record per thanked account | Salesforce Activity records |
 
 ---
 
